@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
-use App\Http\Controllers\TestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,12 +13,6 @@ use App\Http\Controllers\TestController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/test-route', function () {
-	return view('test-view');
-});
-
-Route::post('/test-route', [TestController::class, 'testRoute']);
+Route::view('/{path?}', 'layouts.app')
+    ->where('path', '.*')
+    ->name('react');

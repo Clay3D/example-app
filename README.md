@@ -1,63 +1,83 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Example Web Application
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Fully containerized web application with Docker and Laravel.
 
-## About Laravel
+## Prerequisites
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+- [Composer](https://getcomposer.org/download/)
+- [NPM](https://nodejs.org/en/)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Development Environment Setup
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Clone Repository
+$ `cd <projects-parent-directory>`
+$ `git clone https://github.com/Clay3D/example-app.git`
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Create Environment file
+$ `cp .env.example .env`
 
-## Learning Laravel
+### Install Composer Dependencies
+$ `composer install`
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Set Application Key
+$ `php artisan key:generate`
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Bring Up Environment
+$ `./vendor/bin/sail up`
 
-## Laravel Sponsors
+### Set Directory Permissions
+$ `chmod -R 777 storage bootstrap/cache`
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### Clear Application Cache
+$ `php artisan optimize:clear`
 
-### Premium Partners
+### Run Migrations
+$ `php artisan migrate`
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/)**
-- **[OP.GG](https://op.gg)**
+### Run Seeds
+$ `php artisan db:seed`
 
-## Contributing
+### Install NPM Dependencies
+$ `npm install`
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Compile NPM Project
+$ `npm run dev`
 
-## Code of Conduct
+### Watch For Frontend Changes
+$ `npm run watch`
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Take Down Environment
+$ `./vendor/bin/sail down`
 
-## Security Vulnerabilities
+### Useful Information
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+#### Host Database Volume // TODO: Need to update these for project
+To ensure that data persists even while the environment is down, we create a volume on the host machine at
+`/var/lib/mysql`. The application's database runs on port 3307 inside of the container and maps to port 3306 on the
+host machine. The database will not be accessible while the environment is down (obviously), but the data persists thanks
+to our volume. Note: You probably want to exec into the database container (`docker exec -it chart7-db bash`) and
+create a MySQL user instead of using `root`. Be sure to update the `.env` file with this new user.
 
-## License
+### How It Works
+A personal access token is assigned to a user at login.
+This personal access token is used as a bearer token to authorize
+requests to the API. In addition to personal access tokens, we are using
+Laravel's built-in cookie based session authentication services.
+This provides the benefits of CSRF protection, session authentication, as well
+as protects against leakage of the authentication credentials via XSS.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# example-app
+Note: The application will only attempt to authenticate using cookies when the incoming request originates from our own SPA frontend.
+
+Client-side and server-side (API) routes are restricted to roles/permissions
+and data sent in requests is validated. The entry point to the application is `/`
+and is set in `routes/web.php`. To define a new client-side route, you will need
+to add the route to our client-side router located in `resources/js/router/Router.tsx`.
+To define a new api route, you will need to add the route to our server-side API router
+located in `routes/api.php`.
+
+Details will be added as needed. Happy programming!
+
+### Code Style
+Code style configuration file for PhpStorm is available for import: etc/build/CodeStyle.xml
+[Copying code style settings](https://www.jetbrains.com/help/phpstorm/copying-code-style-settings.html)

@@ -1,0 +1,25 @@
+// fonts
+@import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+
+// bootstrap override settings
+@import 'settings/bootstrap';
+
+// bootstrap library
+@import '~bootstrap/scss/bootstrap';
+
+// font-awesome library
+$fa-font-path: '~@fortawesome/fontawesome-free/webfonts';
+@import '~@fortawesome/fontawesome-free/scss/fontawesome';
+@import '~@fortawesome/fontawesome-free/scss/brands';
+@import '~@fortawesome/fontawesome-free/scss/regular';
+@import '~@fortawesome/fontawesome-free/scss/solid';
+@import '~@fortawesome/fontawesome-free/scss/v4-shims';
+
+// global styles
+@import 'global';
+
+// components
+@import '../js/components/components';
+
+// pages
+@import '../js/pages/pages';
